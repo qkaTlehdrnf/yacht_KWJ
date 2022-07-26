@@ -84,7 +84,7 @@ class yacht():
         self.dice = fix_array + self.dice
         return self.dice
     
-    def diceroll(self,n=5):#dice only have 6 eyes
+    def diceroll(self,n=5):#5 dices only have 6 eyes
         self.dice = np.zeros(6, int)#six class for dice
         for i in range(n): self.dice[np.random.randint(6)] +=1
 
