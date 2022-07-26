@@ -1,6 +1,6 @@
 import numpy as np
 
-class yacht():
+class Yacht():
     def __init__(self):
         self.diceroll()
 
@@ -121,10 +121,10 @@ class yacht():
         print("Large Straight: ", expect[10])
         print("Yacht: ", expect[11])
 
-class battle():
+class Battle():
 
     def __init__(self):
-        self.yacht = yacht()
+        self.yacht = Yacht()
         self.score_board = np.zeros(12,int)
         self.score_selected = np.zeros(12,int)
         self.dice = self.yacht.dice
@@ -151,9 +151,6 @@ class battle():
         return bonus + score
 
 
-
-
 if __name__ == '__main__':
-    for i in range(10):
-        x=yacht()
-        x.show()
+    x=Yacht()
+    print(x.dice)
