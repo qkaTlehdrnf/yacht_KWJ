@@ -1,46 +1,41 @@
 import numpy as np
 
-class Yacht():
-    def __init__(self):
-        self.diceroll()
+def keyEwrapper(func):
+    try:
+        return func
+    except KeyboardInterrupt:
+        return 0
 
-
+class SimpleNums:
+    @keyEwrapper
     def Ones(self):
-        try: 
-            return self.dice[0]*1
-        except KeyError:
-            return 0
-
+        return self.dice[0]*1
+    @keyEwrapper
     def Twos(self):
-        try:
-            return self.dice[1]*2
-        except KeyError:
-            return 0
-
+        return self.dice[1]*2
+    @keyEwrapper
     def Threes(self):
-        try:
-            return self.dice[2]*3
-        except KeyError:
-            return 0
-
+        return self.dice[2]*3
+    @keyEwrapper
     def Fours(self):
-        try:
-            return self.dice[3]*4
-        except KeyError:
-            return 0
-
+        return self.dice[3]*4
+    @keyEwrapper
     def Fives(self):
-        try:
-            return self.dice[4]*5
-        except KeyError:
-            return 0
-
+        return self.dice[4]*5
+    @keyEwrapper
     def Sixes(self):
-        try:
-            return self.dice[5]*6
-        except KeyError:
-            return 0
+        return self.dice[5]*6
 
+class ComplexNums:    
+    def dice_sum(self):
+        sum = 0
+        for i in range(6):
+            sum += self.dice[i]*(i+1) 
+        return sum
+    
+    def diceroll(self,n=5):#5 dices only have 6 eyes
+        self.dice = np.zeros(6, int)#six class for dice
+        for i in range(n): self.dice[np.random.randint(6)] += 1
 
     def Choice(self):
         return self.dice_sum()
@@ -71,22 +66,16 @@ class Yacht():
         if np.count_nonzero(self.dice)==1:
             return 50
         else: return 0
-    
-    def dice_sum(self):
-        sum = 0
-        for i in range(6):
-            sum += self.dice[i]*(i+1) 
-        return sum
+
+class Yacht(SimpleNums, ComplexNums):
+    def __init__(self):
+        self.diceroll()
 
     def roll(self,fix_array):
         assert (self.dice - fix_array).all()>=0
         self.diceroll(5-sum(fix_array))
         self.dice = fix_array + self.dice
         return self.dice
-    
-    def diceroll(self,n=5):#5 dices only have 6 eyes
-        self.dice = np.zeros(6, int)#six class for dice
-        for i in range(n): self.dice[np.random.randint(6)] +=1
 
     def expect(self, n=None):
         score_board=np.array(
@@ -122,14 +111,13 @@ class Yacht():
         print("Yacht: ", expect[11])
 
 class Battle():
-
     def __init__(self):
         self.yacht = Yacht()
         self.score_board = np.zeros(12,int)
         self.score_selected = np.zeros(12,int)
         self.dice = self.yacht.dice
         self.yacht.roll(np.zeros(6,int))
-        self.dice_remain=np.array((2))
+        self.dice_remain= 2
 
     def roll(self, fix=np.zeros(6,int)):
         assert self.dice_remain#make sure dice not roll 3 times
@@ -141,7 +129,7 @@ class Battle():
         assert not self.score_selected[select]
         self.score_board[select] = self.yacht.expect(select)
         self.score_selected[select] += 1
-        self.dice_remain = np.array((2))
+        self.dice_remain = 2
         self.yacht.roll(np.zeros(6,int))
         return self.score_selected, self.total_score()
     
@@ -153,4 +141,4 @@ class Battle():
 
 if __name__ == '__main__':
     x=Yacht()
-    print(x.dice)
+    x.show()
