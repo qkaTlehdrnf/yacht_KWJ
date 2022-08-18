@@ -4,6 +4,7 @@ conda install -c anaconda pillow
 conda install -c conda-forge pyglet
 conda install ipykernel
 conda install pytorch torchvision torchaudio -c pytorch#nightly is very unstable
+conda install -c conda-forge jupyterlab
 
 #conda install pytorch torchvision torchaudio -c pytorch-nightly
-python == 3.8
+python == 3.9

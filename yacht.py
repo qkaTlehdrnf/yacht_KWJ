@@ -1,5 +1,4 @@
-import numpy as np
-
+import random
 def keyEwrapper(func):
     try:
         return func
@@ -34,36 +33,36 @@ class ComplexNums:
         return sum
     
     def diceroll(self,n=5):#5 dices only have 6 eyes
-        self.dice = np.zeros(6, int)#six class for dice
-        for i in range(n): self.dice[np.random.randint(6)] += 1
+        self.dice = [0]*6#six values for dice
+        for _ in range(n): self.dice[random.randint(0,5)] += 1
 
     def Choice(self):
         return self.dice_sum()
 
     def FofaKind(self):
-        if np.any(self.dice)>=4:
+        if 4 in self.dice or 5 in self.dice:
             return self.dice_sum()
         else: return 0
 
     def FullHouse(self):
-        if (np.count_nonzero(self.dice)==2 and np.any(self.dice==3)) or len(self.dice)==1:
+        if (3 in self.dice and 2 in self.dice) or 5 in self.dice:
             return self.dice_sum()
         else: return 0
 
     def SmallStraight(self):
         for i in range(3):
-            if self.dice[i:i+4].all():
+            if 0 not in self.dice[i:i+4]:
                 return 15
         return 0
 
     def LargeStraight(self):
         for i in range(2):
-            if self.dice[i:i+5].all():
+            if 0 not in self.dice[i:i+5]:
                 return 30
         return 0
 
     def Yacht(self):
-        if np.count_nonzero(self.dice)==1:
+        if 0 not in self.dice:
             return 50
         else: return 0
 
@@ -71,15 +70,15 @@ class Yacht(SimpleNums, ComplexNums):
     def __init__(self):
         self.diceroll()
 
-    def roll(self,fix_array):
-        assert (self.dice - fix_array).all()>=0
+    def roll(self,fix_array = None):
+        assert not sum(map(lambda x, y: x-y<0, self.dice, fix_array)), f"{sum(map(lambda x, y: x-y<0, self.dice, fix_array))}, {self.dice}, {fix_array}"#0아래의 숫자가 있으면 모두 셈, 그 결과값이 한개라도 있으면 에러
         self.diceroll(5-sum(fix_array))
-        self.dice = fix_array + self.dice
+        self.dice = list(map(lambda x,y:x + y, self.dice, fix_array)) 
         return self.dice
 
     def expect(self, n=None):
-        score_board=np.array(
-            (self.Ones(),
+        score_board=[
+            self.Ones(),
             self.Twos(),
             self.Threes(),
             self.Fours(),
@@ -90,7 +89,7 @@ class Yacht(SimpleNums, ComplexNums):
             self.FullHouse(),
             self.SmallStraight(),
             self.LargeStraight(),
-            self.Yacht()))
+            self.Yacht()]
         if n == None: return score_board 
         else: return score_board[n]
 
@@ -110,18 +109,18 @@ class Yacht(SimpleNums, ComplexNums):
         print("Large Straight: ", expect[10])
         print("Yacht: ", expect[11])
 
-class Battle():
+class Battle:
     def __init__(self):
         self.yacht = Yacht()
-        self.score_board = np.zeros(12,int)
-        self.score_selected = np.zeros(12,int)
+        self.score_board = [0]*12
+        self.score_selected = [0]*12
         self.dice = self.yacht.dice
-        self.yacht.roll(np.zeros(6,int))
+        self.yacht.roll([0]*6)
         self.dice_remain= 2
 
-    def roll(self, fix=np.zeros(6,int)):
+    def roll(self, fix=[0]*6):
         assert self.dice_remain#make sure dice not roll 3 times
-        self.dice = self.yacht.roll(fix)
+        self.dice = self.yacht.roll(fix_array = fix)
         self.dice_remain-=1
         return self.dice
 
@@ -130,7 +129,7 @@ class Battle():
         self.score_board[select] = self.yacht.expect(select)
         self.score_selected[select] += 1
         self.dice_remain = 2
-        self.yacht.roll(np.zeros(6,int))
+        self.yacht.roll([0]*6)
         return self.score_selected, self.total_score()
     
     def total_score(self):
