@@ -1,10 +1,7 @@
-conda install -c conda-forge gym
-conda install -c conda-forge matplotlib
+conda install -c conda-forge gym matplotlib  pyglet jupyterlab
 conda install -c anaconda pillow
-conda install -c conda-forge pyglet
 conda install ipykernel
 conda install pytorch torchvision torchaudio -c pytorch#nightly is very unstable
-conda install -c conda-forge jupyterlab
 
 #conda install pytorch torchvision torchaudio -c pytorch-nightly
 python == 3.9
